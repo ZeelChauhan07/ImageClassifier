@@ -26,8 +26,8 @@ print(f"Test samples: {len(test_data)}")
 
 # Look at a single sample
 image, label = train_data[0]
-print(f"Image shape: {image.shape}")  # [1, 28, 28] -> 1 channel, 28x28 pixels
-print(f"Label: {label}")  # integer 0-9
+print(f"Image shape: {image.shape}") 
+print(f"Label: {label}")  
 
 # Wrap in DataLoaders — this handles batching and shuffling for us
 train_loader = DataLoader(train_data, batch_size=64, shuffle=True)
@@ -35,8 +35,8 @@ test_loader = DataLoader(test_data, batch_size=64, shuffle=False)
 
 # Peek at one batch
 images, labels = next(iter(train_loader))
-print(f"Batch of images shape: {images.shape}")  # [64, 1, 28, 28]
-print(f"Batch of labels shape: {labels.shape}")  # [64]
+print(f"Batch of images shape: {images.shape}")  
+print(f"Batch of labels shape: {labels.shape}")  
 
 # DEFINE THE MODEL
 # import torch
@@ -63,13 +63,12 @@ print(model)
 
 # Checking work uptill now
 # Grab one batch from your dataloader
-images, labels = next(iter(train_loader))  # adjust name if yours differs
-
-print("Input batch shape:", images.shape)   # should be [batch_size, 1, 28, 28]
+images, labels = next(iter(train_loader)) 
+print("Input batch shape:", images.shape)   
 
 # Pass it through the model
 outputs = model(images)
-print("Output shape:", outputs.shape)       # should be [batch_size, 10]
+print("Output shape:", outputs.shape)      
 
 
 # LOSS FUNCTION AND OPTIMIZER
@@ -136,3 +135,23 @@ model = SimpleNN()
 model.load_state_dict(torch.load('fashion_mnist_model.pth'))
 model.eval()  # set to evaluation mode
 print("Model loaded successfully!")
+
+import matplotlib.pyplot as plt
+
+# Class names for Fashion-MNIST (in label order 0-9)
+classes = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+           'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+
+# Grab a single image from the test set
+image, true_label = test_data[100] 
+
+model.eval()
+with torch.no_grad():
+    output = model(image.unsqueeze(0))  
+    _, predicted = torch.max(output, 1)
+
+# Show the image with prediction
+plt.imshow(image.squeeze(), cmap='gray')
+plt.title(f"Predicted: {classes[predicted.item()]} | Actual: {classes[true_label]}")
+plt.axis('off')
+plt.show()
